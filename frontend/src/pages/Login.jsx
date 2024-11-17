@@ -40,7 +40,7 @@ export default function Login() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6">
+        <form onSubmit={handleSubmit} method="POST" className="space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -50,6 +50,9 @@ export default function Login() {
             </label>
             <div className="mt-2">
               <input
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.email}
                 id="email"
                 name="email"
                 type="email"
@@ -57,6 +60,9 @@ export default function Login() {
                 autoComplete="email"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
+              {errors.email && touched.email && (
+                <p className="text-red-500 text-xs">{errors.email}</p>
+              )}
             </div>
           </div>
 
@@ -71,6 +77,9 @@ export default function Login() {
             </div>
             <div className="mt-2">
               <input
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.password}
                 id="password"
                 name="password"
                 type="password"
@@ -78,6 +87,9 @@ export default function Login() {
                 autoComplete="current-password"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
+              {errors.password && touched.password && (
+                <p className="text-red-500 text-xs">{errors.password}</p>
+              )}
             </div>
           </div>
 
@@ -92,7 +104,7 @@ export default function Login() {
         </form>
 
         <p className="mt-10 text-center text-sm/6 text-gray-500">
-          Don't have an account?{" "}
+          Dont have an account?{" "}
           <a
             onClick={() => navigate("/signup")}
             className="font-semibold text-indigo-600 hover:text-indigo-500"
