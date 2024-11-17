@@ -1,28 +1,32 @@
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import AuthContext from "../context/authContext";
 import { useFormik } from "formik";
-import { LoginSchema } from "../validations/userSchema";
+import { SignupSchema } from "../validations/userSchema";
+import api from "../services/apis";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-export default function Login() {
+export default function Signup() {
   const navigate = useNavigate();
-
-  const { login } = useContext(AuthContext);
-
   const { errors, handleBlur, handleChange, handleSubmit, values, touched } =
     useFormik({
       initialValues: {
+        name: "",
         email: "",
         password: "",
+        confirm_password: "",
       },
-      validationSchema: LoginSchema,
+      validationSchema: SignupSchema,
       onSubmit: Submission,
     });
 
   async function Submission(formData) {
     try {
-      const response = await login(formData);
-      if (response.token) navigate("/");
+      const response = await api.register(formData);
+      if (response.user) {
+        toast.success("Account created successfully");
+        navigate("/login");
+      } else {
+        toast.warning(response.message);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -36,12 +40,34 @@ export default function Login() {
           className="mx-auto h-10 w-auto"
         />
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-          Sign in to your account
+          Create Account
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} method="POST" className="space-y-6">
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm/6 font-medium text-gray-900"
+            >
+              User Name
+            </label>
+            <div className="mt-2">
+              <input
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.name}
+                id="name"
+                name="name"
+                type="text"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+              />
+              {errors.name && touched.name && (
+                <p className="text-red-500 text-xs">{errors.name}</p>
+              )}
+            </div>
+          </div>
           <div>
             <label
               htmlFor="email"
@@ -91,24 +117,48 @@ export default function Login() {
               )}
             </div>
           </div>
+          <div>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="password"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
+                Confirm Password
+              </label>
+            </div>
+            <div className="mt-2">
+              <input
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.confirm_password}
+                id="password"
+                name="confirm_password"
+                type="password"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+              />
+              {errors.confirm_password && touched.confirm_password && (
+                <p className="text-red-500 text-xs">{errors.confirm_password}</p>
+              )}
+            </div>
+          </div>
 
           <div>
             <button
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Log in
+              Register
             </button>
           </div>
         </form>
 
         <p className="mt-10 text-center text-sm/6 text-gray-500">
-          Dont have an account?{" "}
+          Already have an account?{" "}
           <a
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/login")}
             className="font-semibold text-indigo-600 hover:text-indigo-500"
           >
-            Create Account
+            Login
           </a>
         </p>
       </div>
