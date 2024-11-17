@@ -10,13 +10,10 @@ exports.register = async (req, res) => {
   try {
     const userExists = await User.findOne({ email });
     if (userExists)
-      return res.status(400).json({ message: "User already exists" });
+      return res.json({ message: "User already exists" });
 
     const user = await User.create({ name, email, password });
-    res.status(201).json({
-      user,
-      token: generateToken(user._id),
-    });
+    res.status(201).json({ user });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -28,9 +25,9 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ message: "Invalid email" });
+      res.json({ message: "Invalid email" });
     } else if (await bcrypt.compare(password, user.password)) {
-      res.status(400).json({ message: "Incorrect password" });
+      res.json({ message: "Incorrect password" });
     } else {
       res.status(200).json({
         user,
