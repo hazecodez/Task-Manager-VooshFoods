@@ -1,31 +1,31 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/authContext";
+import { useFormik } from "formik";
+import { LoginSchema } from "../validations/userSchema";
 
 export default function Login() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
   const { login } = useContext(AuthContext);
 
-  const handleLogin = () => {
-    login(formData);
-};
+  const { errors, handleBlur, handleChange, handleSubmit, values, touched } =
+    useFormik({
+      initialValues: {
+        email: "",
+        password: "",
+      },
+      validationSchema: LoginSchema,
+      onSubmit: Submission,
+    });
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await login(formData);
-  //     if (response.message) {
-  //       console.log(response.message);
-  //     } else {
-  //       login(response.userData);
-  //       console.log(response.userData);
-  //     }
-  //   } catch (error) {
-  //     console.error("Login failed", error);
-  //   }
-  // };
+  async function Submission(formData) {
+    try {
+      await login(formData);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
