@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
     const loggedInUser = await api.login(credentials);
     if (loggedInUser.token) {
       toast.success("Successfully logged");
+      localStorage.setItem("token", loggedInUser.token);
       setUser(loggedInUser);
       return loggedInUser;
     } else {
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("token");
     toast.success("User logged out");
   };
 
